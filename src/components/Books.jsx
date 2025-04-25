@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from 'react-router-dom'; 
+//import { useHistory } from 'react-router-dom'; 
 
 const LibraryBooks = () => {
     const [books, setBooks] = useState([]); 
-    const history = useHistory();
+   // const history = useHistory();
 
     useEffect(() => {
         const fetchBooks = async () => {
             try {
                 const response = await fetch('https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books'); 
                 const data = await response.json(); 
+                console.log(data)
                 setBooks(data); 
             } catch (error) {
                 console.error('Error getting books:', error); 

@@ -1,20 +1,41 @@
-import { useState } from 'react'
-import bookLogo from './assets/books.png'
+import { useEffect, useState } from "react";
+import bookLogo from "./assets/books.png";
+import LibraryBooks from "./components/Books.jsx"; 
+
+import Navigations from "./components/Navigations.jsx"; 
+import { Routes, Route } from "react-router-dom";
+
+
+
+const API_URL = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api";
 
 function App() {
-  const [token, setToken] = useState(null)
+  const [token, setToken] = useState(null);
 
   return (
     <>
-      <h1><img id='logo-image' src={bookLogo}/>Library App</h1>
+<Routes>
+<Route path= "/books" element= {<LibraryBooks />} />
+  <Route path='/Home' element={<Home />}/>
+  <Route path='/users'  element={<users />}/>
 
-      <p>Complete the React components needed to allow users to browse a library catalog, check out books, review their account, and return books that they've finished reading.</p>
 
-      <p>You may need to use the `token` in this top-level component in other components that need to know if a user has logged in or not.</p>
+</Routes>
 
-      <p>Don't forget to set up React Router to navigate between the different views of your single page application!</p>
+
+
+
+       <Navigations></Navigations> //render NAVATIONS 
+      <h1>
+        <img id="logo-image" src={bookLogo} />
+        Library App
+      </h1>
+   
+    <LibraryBooks></LibraryBooks> //  render lIB BOOKS
+   
+     
     </>
-  )
+  );
 }
 
-export default App
+export default App;
