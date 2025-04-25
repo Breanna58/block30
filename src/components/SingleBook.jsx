@@ -1,20 +1,22 @@
 /* TODO - add your code to create a functional React component that renders details for a single book. Fetch the book data from the provided API. You may consider conditionally rendering a 'Checkout' button for logged in users. */
 
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"; 
 
 
 
 
 
 
-function SingleBook = ({bookId, token})  {
-    const [book, setBook] = useState (null); 
-    const [loading, setLoading] = useState(true); 
-    const [error, setError] = useState(null); 
+function SingleBook  ({token})  {
+  const { id: bookId } = useParams(); // Extract `id` from the URL
+    const [book, setBook] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect (() => {
 
-       fetch('https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books/{id}')
+       const fetchBook = async ('https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books/${id}')
        .then((response) => response.json())
        .then((data) => {
         setBook(data); 
@@ -58,8 +60,8 @@ function SingleBook = ({bookId, token})  {
 
 
 
+export default SingleBook; 
 
-}
 
 
 

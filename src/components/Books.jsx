@@ -1,41 +1,54 @@
-import React, { useState, useEffect } from "react";
-//import { useHistory } from 'react-router-dom'; 
+import { useEffect, useState } from "react";
 
-const LibraryBooks = () => {
-    const [books, setBooks] = useState([]); 
-   // const history = useHistory();
+const API_URL = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api";
 
-    useEffect(() => {
-        const fetchBooks = async () => {
-            try {
-                const response = await fetch('https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books'); 
-                const data = await response.json(); 
-                console.log(data)
-                setBooks(data); 
-            } catch (error) {
-                console.error('Error getting books:', error); 
-            }
-        }; 
+function LibraryBooks() {
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-        fetchBooks(); 
-    }, []); 
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await fetch(`${API_URL}/books`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch books");
+        }
+        const data = await response.json();
+        setBooks(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
 
-    const handleBookClick = (bookId) => {
-        history.push(`/book/${bookId}`); 
-    }; 
+    fetchBooks();
+  }, []);
 
-    return (
-        <div>
-            <h2>Library Books</h2>
-            <ul>
-                {books.map(book => (
-                    <li key={book.id} onClick={() => handleBookClick(book.id)}>
-                        {book.title}
-                    </li>
-                ))}
-            </ul>
-        </div>
-    ); 
-}; 
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error loading books: {error}</p>;
+  }
+
+  return (
+    <div>
+      <h2>Library Books</h2>
+      <ul>
+        {books.map((book) => (
+          <li key={book.id}>
+            <h3>{book.title}</h3>
+            <p>{book.author}</p>
+            <p>{book.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export default LibraryBooks;
+

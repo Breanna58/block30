@@ -27,3 +27,4 @@ const handleSubmit = (e) => {
 
 
 }; 
+export default LoginForm; 
