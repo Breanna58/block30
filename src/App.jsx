@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LibraryBooks from "./components/Books";
 import SingleBook from "./components/SingleBook";  // Import the SingleBook component
+import Home from "./components/Home.jsx";  
+import Users from "./components/Users.jsx";
 
 const API_URL = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api";
 
@@ -9,6 +11,12 @@ function App() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  <Routes>
+  <Route path="/Books" element={<LibraryBooks />} />
+  <Route path="/Home" element={<Home />} />
+  <Route path="Users" element={<Users />} />
+</Routes>
 
   useEffect(() => {
     const fetchBooks = async () => {
