@@ -1,67 +1,51 @@
-/* TODO - add your code to create a functional React component that renders details for a single book. Fetch the book data from the provided API. You may consider conditionally rendering a 'Checkout' button for logged in users. */
-
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; 
+import { useParams } from "react-router-dom";
 
+function SingleBook({ token }) {
+  const { id: bookId } = useParams();
+  const [book, setBook] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-
-
-
-
-function SingleBook  ({token})  {
-  const { id: bookId } = useParams(); // Extract `id` from the URL
-    const [book, setBook] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect (() => {
-
-       const fetchBook = async ('https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books/${id}')
-       .then((response) => response.json())
-       .then((data) => {
-        setBook(data); 
-        setLoading(false); 
-       })
-
-       .catch((err) => {
-        setError(err); 
-        setLoading(false); 
-
-
-       }); 
-
-    }, [bookId]); 
-
-    if (loading) {
-        return <p>Loading.....</p>
-    }
-
-
-    if (error) {
-        return <p>Error loading book details: {error.message}</p>;
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        const response = await fetch(`https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books/${bookId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch book');
+        }
+        const data = await response.json();
+        setBook(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message); // Handle the error and set the error message
+        setLoading(false); // Set loading to false after an error occurs
       }
-    
-      return (
-        <div>
-          <h2>{book.title}</h2>
-          <p>Author: {book.author}</p>
-          <p>Description: {book.description}</p>
-          <p>id: ${book.id}</p>
-    
-         
-          {token && (
-            <button onClick={() => alert('Proceed to Checkout')}>Checkout</button>
-          )}
-        </div>
-      );
-    }
+    };
 
+    fetchBook();
+  }, [bookId]);
 
+  if (loading) {
+    return <p>Loading.....</p>;
+  }
 
+  if (error) {
+    return <p>Error loading book details: {error}</p>;
+  }
 
+  return (
+    <div>
+      <h2>{book.title}</h2>
+      <p>Author: {book.author}</p>
+      <p>Description: {book.description}</p>
+      <p>id: {book.id}</p>
 
-export default SingleBook; 
+      {token && (
+        <button onClick={() => alert('Proceed to Checkout')}>Checkout</button>
+      )}
+    </div>
+  );
+}
 
-
-
-
+export default SingleBook;

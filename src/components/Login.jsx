@@ -1,30 +1,30 @@
-/* TODO - add your code to create a functional React component that renders a login form */
-
-import { useState } from "react"
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const LoginForm = () => {
-    const [email, setEmail] = useState(""); 
-    const [password, SetPassword] = useState(""); 
-    const [error, setError] = useState(""); 
+  const [email, setEmail] = useState(""); 
+  const [password, setPassword] = useState(""); 
+  const [error, setError] = useState(""); 
+  const [loading, setLoading] = useState(false); 
+  const navigate = useNavigate(); 
 
-
-
-}
-
-const handleSubmit = (e) => {
-
+  const handleSubmit = async (e) => {
     e.preventDefault(); 
-    if (!email || !password) {
-        setError("both fields are required"); 
-        return; 
 
+    // Validate input
+    if (!email || !password) {
+      setError("Both fields are required.");
+      return;
     }
 
     setError(""); 
-    console.log("logging in with", {email, password}); 
+    setLoading(true); 
 
-
-
-}; 
-export default LoginForm; 
+    try {
+      // Send login request to the API
+      const response = await fetch("https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),  // Sending
