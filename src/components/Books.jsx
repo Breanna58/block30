@@ -18,8 +18,11 @@ function LibraryBooks() {
 
         const result = await response.json();
         console.log("Books Data:", result); 
-        setBooks(result);  
+
+        setBooks(result || []);  
         setLoading(false);
+
+        (result);
       } catch (err) {
         console.error("Error fetching books:", err);
         setError(err.message);
@@ -30,11 +33,57 @@ function LibraryBooks() {
     fetchBooks();
   }, []);
 
+  const handleCheckout = async (bookId) => {
+    const token = localStorage.getItem("token"); 
+        if (!token) {
+            alert ("please log in to check out a book."); 
+            return; 
+        }
+        try {
+
+            const response = await fetch(`${API_URL}/books/${bookId}`, {
+                method: "PATCH", 
+                headers: {
+                    "Content-Type": "application/json", 
+                    Authorization: `Bearer ${token}`, 
+
+                }, 
+
+            }); 
+
+            const data = await response.json(); 
+            if (!response.ok) {
+
+                throw new Error(data.message || "Checkout failed."); 
+
+
+            }
+            alert(`Succesfully checked out book ID: ${bookId}`); 
+            setBooks((prevBooks) =>
+                prevBooks.map((book) =>
+                    book.id === bookId ? { ...book, available: false } : book
+        )
+          
+        ); 
+
+     } catch (err) {
+        console.error("Checkout error:", err); 
+        alert(err.message); 
+
+
+        }
+    }; 
+
+  
+
   // Filter books based on search term
-  const filteredBooks = books.filter((book) =>
+  const filteredBooks = searchTerm
+  ? books.filter((book) => 
     book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     book.author.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  )
+  
+  : books; 
 
   if (loading) return <p>Loading books...</p>;
   if (error) return <p>Error loading books: {error}</p>;
@@ -57,6 +106,12 @@ function LibraryBooks() {
               <h3>{book.title}</h3>
               <p>{book.author}</p>
               <p>{book.description}</p>
+              {book.available ? (
+<button onClick={()=> handleCheckout(book.id)}>Checkout</button>
+
+              ):(
+                <p>Not Available</p>
+              )}    
             </li>
           ))
         )}

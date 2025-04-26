@@ -8,8 +8,10 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false); 
   const navigate = useNavigate(); 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); 
+
+    const handleSubmit = async (e) => {
+        e.preventDefault(); 
+
 
     // Validate input
     if (!email || !password) {
@@ -28,10 +30,62 @@ const LoginForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),  // Sending
-
-        const data = await response.json(); 
+        
+    }); 
+        
+        const data = await  response.json();  
 
         if (!response.ok) {
             throw new Error(data.message || "Login failed."); 
 
         }
+
+
+        //token to local storage 
+        localStorage.setItem("token", data.token); 
+     
+
+
+        navigate("/books"); 
+     } catch (err) {
+        setError(err.message); 
+
+
+     } finally {
+
+        setLoading(false)
+
+     }
+     }; 
+
+     return  (
+        <form onSubmit={handleSubmit}>
+            <h2>Login</h2>
+ {error && <p style ={{ color: "red"}}>{error}</p>}
+<input
+type="email"
+placeholder="Email"
+value={email}
+onChange={(e) => setEmail(e.target.value)}
+/>
+   
+<input
+type="password"
+placeholder="Password"
+value={password}
+onChange={(e) => setPassword(e.target.value)}
+
+/>
+
+<button type="submit" disabled={loading}>
+    {loading ? "Logging in..." : "Login"}
+
+     </button>
+
+
+        </form>
+     ); 
+
+     }; 
+
+     export default LoginForm; 

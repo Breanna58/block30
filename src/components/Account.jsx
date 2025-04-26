@@ -8,7 +8,24 @@ const UserLogin = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {   
-                const response = await fetch('https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/me');
+
+                const token = localStorage.getItem("token"); 
+                if (!token) {
+                    setUser(null); 
+                    return;
+                }
+
+
+                const response = await fetch('https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/me'; {
+                
+                headers: {
+
+                    "Content-Type": "application/json", 
+                    Authorization: `Bearer ${token}`, 
+
+                }, 
+            });
+                
                 if (response.ok) {
                     const data = await response.json(); 
                     setUser(data); 
@@ -27,8 +44,8 @@ const UserLogin = () => {
         return (
             <div>
                 <p>Please log in or create an account to view your account details.</p>
-                <button onClick={() => history.push('/login')}>Log In</button>
-                <button onClick={() => history.push('/signup')}>Create Account</button>
+                <button onClick={() => navigate('/login')}>Log In</button>
+                <button onClick={() => navigate('/signup')}>Create Account</button>
             </div>
         );
     }
